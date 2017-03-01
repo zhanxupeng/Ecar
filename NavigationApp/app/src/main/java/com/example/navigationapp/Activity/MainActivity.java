@@ -95,7 +95,12 @@ public class MainActivity extends AppCompatActivity {
                                 if(StopStory.flag!=0){
                                 if(car.getSpeed()<=1) {
                                     Toast.makeText(MainActivity.this, "当前正在播放休闲", Toast.LENGTH_LONG).show();
-                                    if (!mediaPlayer.isPlaying()) {
+                                    if(!"music.mp3".equals(music)) {
+                                        mediaPlayer.reset();
+                                        music="music.mp3";
+                                        checkmusic();
+                                    }
+                                    if(!mediaPlayer.isPlaying()){
                                         mediaPlayer.start();
                                     }
                                 }
@@ -107,9 +112,14 @@ public class MainActivity extends AppCompatActivity {
                         boolean result=check.checkSafe(Person.car_id,cars);
                         if(result){
                             Toast.makeText(MainActivity.this,"危险，请紧急刹车！",Toast.LENGTH_SHORT).show();
-                           if(!mediaPlayer.isPlaying()){
+                            if(!"danger.mp3".equals(music)) {
+                                mediaPlayer.reset();
+                                music="danger.mp3";
+                                checkmusic();
+                            }
+                            if(!mediaPlayer.isPlaying()){
                                 mediaPlayer.start();
-                           }
+                            }
                         }
                         //如果是雾霾天气，开启提醒
                         if(StopStory.flag>5){
@@ -118,6 +128,14 @@ public class MainActivity extends AppCompatActivity {
                             if(sresult == 1){
                                 //System.out.println("您前方30米有车辆在行驶，请谨慎驾驶！");
                                 Toast.makeText(MainActivity.this,"您前方30米有车辆在行驶，请谨慎驾驶！",Toast.LENGTH_SHORT).show();
+                                if(!"manqian.mp3".equals(music)) {
+                                    mediaPlayer.reset();
+                                    music="manqian.mp3";
+                                    checkmusic();
+                                }
+                                if(!mediaPlayer.isPlaying()){
+                                    mediaPlayer.start();
+                                }
                             }
                             if(sresult == 11){
                                 //System.out.println("您前方30米有车辆在行驶且车速较快，请谨慎驾驶！");
@@ -126,10 +144,26 @@ public class MainActivity extends AppCompatActivity {
                             if(sresult == 2){
                                 //System.out.println("您前方30米有逆向来车，请谨慎驾驶！");
                                 Toast.makeText(MainActivity.this,"您前方30米有逆向来车，请谨慎驾驶！",Toast.LENGTH_SHORT).show();
+                                if(!"qianche.mp3".equals(music)) {
+                                    mediaPlayer.reset();
+                                    music="qianche.mp3";
+                                    checkmusic();
+                                }
+                                if(!mediaPlayer.isPlaying()){
+                                    mediaPlayer.start();
+                                }
                             }
                             if(sresult == 22){
                                 //System.out.println("您前方30米有逆向来车且车速较快，请谨慎驾驶！");
                                 Toast.makeText(MainActivity.this,"您前方30米有逆向来车且车速较快，请谨慎驾驶！",Toast.LENGTH_SHORT).show();
+                                if(!"qianche.mp3".equals(music)) {
+                                    mediaPlayer.reset();
+                                    music="qianche.mp3";
+                                    checkmusic();
+                                }
+                                if(!mediaPlayer.isPlaying()){
+                                    mediaPlayer.start();
+                                }
                             }
                             if(sresult == 3){
                                 //System.out.println("前方交叉路口有来车，请谨慎驾驶！");
@@ -151,6 +185,11 @@ public class MainActivity extends AppCompatActivity {
                         int result2=check.PianYi(myold,mynew);
                         if(result2==-1){
                             Toast.makeText(MainActivity.this,"当前已经偏离方向，请注意行驶安全！",Toast.LENGTH_SHORT).show();
+                            if(!"pianli.mp3".equals(music)) {
+                                mediaPlayer.reset();
+                                music="pianli.mp3";
+                                checkmusic();
+                            }
                             if(!mediaPlayer.isPlaying()){
                                 mediaPlayer.start();
                             }
@@ -162,19 +201,34 @@ public class MainActivity extends AppCompatActivity {
                         crossroads=check.crosssafe(Person.car_id,cars);
                         if(crossroads==1){
                             Toast.makeText(MainActivity.this,"前方左边有车辆高速驶过，注意安全！",Toast.LENGTH_SHORT).show();
-                           // if(!mediaPlayer.isPlaying()){
-                               // mediaPlayer.start();
-                            //}
+                            if(!"zuoan.mp3".equals(music)) {
+                                mediaPlayer.reset();
+                                music="zuoan.mp3";
+                                checkmusic();
+                            }
+                            if(!mediaPlayer.isPlaying()){
+                                mediaPlayer.start();
+                            }
                         }else if(crossroads==2){
                             Toast.makeText(MainActivity.this,"前方右边有车辆高速驶过，注意安全！",Toast.LENGTH_SHORT).show();
-                           // if(!mediaPlayer.isPlaying()){
-                               // mediaPlayer.start();
-                           // }
+                            if(!"youan.mp3".equals(music)) {
+                                mediaPlayer.reset();
+                                music="youan.mp3";
+                                checkmusic();
+                            }
+                            if(!mediaPlayer.isPlaying()){
+                                mediaPlayer.start();
+                            }
                         }else if(crossroads==3){
                             Toast.makeText(MainActivity.this,"前方左右都有车辆高速驶过，注意安全！",Toast.LENGTH_SHORT).show();
-                            //if(!mediaPlayer.isPlaying()){
-                               // mediaPlayer.start();
-                           // }
+                            if(!"zuoyouan.mp3".equals(music)) {
+                                mediaPlayer.reset();
+                                music="zuoyouan.mp3";
+                                checkmusic();
+                            }
+                            if(!mediaPlayer.isPlaying()){
+                                mediaPlayer.start();
+                            }
                         }
                         //岔路口相撞部分未编译
                         //看看弯倒口是否有车迎面驶来
@@ -184,9 +238,9 @@ public class MainActivity extends AppCompatActivity {
                             Toast.makeText(MainActivity.this,"前方弯路口有车迎面驶来，请小心驾驶！",Toast.LENGTH_SHORT).show();
 
                             //换歌
-                            if(!"caijie.mp3".equals(music)) {
+                            if(!"wanlai.mp3".equals(music)) {
                                 mediaPlayer.reset();
-                                music="caijie.mp3";
+                                music="wanlai.mp3";
                                 checkmusic();
                             }
                             if(!mediaPlayer.isPlaying()){
@@ -368,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendRequestNowcar(final int car_id,final int flag,final double xx,final double yy,final double speed,final  double direction){
-        String src="http://115.196.159.159:8080/CarSafe/NowcarServlet?car_id="+car_id+"&&flag="+flag+
+        String src="http://115.196.159.247:8080/CarSafe/NowcarServlet?car_id="+car_id+"&&flag="+flag+
                 "&&xx="+xx+"&&yy="+yy+"&&speed="+speed+"&&direction="+direction;
         HttpUtil.sendHttpRequest(src, new HttpCallbackListener() {
             @Override
@@ -386,7 +440,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     private void sendRequestWithHttpURLConnection(final int car_id){
-        HttpUtil.sendHttpRequest("http://115.196.159.159:8080/CarSafe/TimecarServlet?car_id="+car_id, new HttpCallbackListener() {
+        HttpUtil.sendHttpRequest("http://115.196.159.247:8080/CarSafe/TimecarServlet?car_id="+car_id, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 Message message=new Message();

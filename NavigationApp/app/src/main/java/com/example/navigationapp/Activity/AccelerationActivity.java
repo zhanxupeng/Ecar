@@ -122,7 +122,7 @@ public class AccelerationActivity extends AppCompatActivity {
         return result;
     }
     private void sendRequestWithHttpURLConnection(final int car_id){
-        HttpUtil.sendHttpRequest("http://192.168.1.106:8080/CarSafe/TimecarServlet?car_id="+car_id, new HttpCallbackListener() {
+        HttpUtil.sendHttpRequest("http://115.196.159.247:8080/CarSafe/TimecarServlet?car_id="+car_id, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 Message message=new Message();

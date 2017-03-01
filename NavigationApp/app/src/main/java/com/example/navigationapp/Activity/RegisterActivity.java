@@ -65,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
     private void sendrequest(String usename,String car_id,String password){
-        String url="http://115.196.159.159:8080/CarSafe/InsertPersonServlet?car_id="+car_id+"&usename="+usename+"&password="+password;
+        String url="http://115.196.159.247:8080/CarSafe/InsertPersonServlet?car_id="+car_id+"&usename="+usename+"&password="+password;
         HttpUtil.sendHttpRequest(url, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {

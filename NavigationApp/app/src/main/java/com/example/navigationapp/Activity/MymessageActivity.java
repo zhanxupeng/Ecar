@@ -132,7 +132,7 @@ public class MymessageActivity extends AppCompatActivity {
         ad1.show();
     }
     private void sendrequest(int car_id,String password){
-        String url="http://115.196.159.159:8080/CarSafe/LoginsServlet?car_id="+car_id+"&password="+password;
+        String url="http://115.196.159.247:8080/CarSafe/LoginsServlet?car_id="+car_id+"&password="+password;
         HttpUtil.sendHttpRequest(url, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
