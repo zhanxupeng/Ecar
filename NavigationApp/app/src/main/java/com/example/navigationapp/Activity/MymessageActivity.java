@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.navigationapp.R;
+import com.example.navigationapp.model.MyIp;
 import com.example.navigationapp.model.Person;
 import com.example.navigationapp.util.HttpCallbackListener;
 import com.example.navigationapp.util.HttpUtil;
@@ -132,7 +133,7 @@ public class MymessageActivity extends AppCompatActivity {
         ad1.show();
     }
     private void sendrequest(int car_id,String password){
-        String url="http://115.196.159.247:8080/CarSafe/LoginsServlet?car_id="+car_id+"&password="+password;
+        String url="http://"+ MyIp.ip+":8080/CarSafe/LoginsServlet?car_id="+car_id+"&password="+password;
         HttpUtil.sendHttpRequest(url, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {

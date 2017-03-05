@@ -29,12 +29,15 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.example.navigationapp.R;
+import com.example.navigationapp.model.MyIp;
+import com.example.navigationapp.model.Mycrowded;
 import com.example.navigationapp.model.Nowcar;
 import com.example.navigationapp.model.Person;
 import com.example.navigationapp.model.Pileup;
 import com.example.navigationapp.model.StopStory;
 import com.example.navigationapp.model.Timecar;
 import com.example.navigationapp.util.ContentHandler;
+import com.example.navigationapp.util.CrowdedHandler;
 import com.example.navigationapp.util.HttpCallbackListener;
 import com.example.navigationapp.util.HttpUtil;
 import com.example.navigationapp.util.NowcarHandler;
@@ -68,9 +71,10 @@ public class MainActivity extends AppCompatActivity {
     private static final int SHOW_NOWCAR=1;
 
     private static final int SHOW_RESPONSE=2;
+    private static final int SHOW_CROWDED=3;
     List<Nowcar> cars=null;
     List<Timecar> times=null;
-
+    List<Mycrowded> crowdeds=null;
     private boolean first=true;//设置一个变量用来检测当前是否是车子第一次动；
     private Nowcar myold,mynew;
 
@@ -119,6 +123,16 @@ public class MainActivity extends AppCompatActivity {
                             }
                             if(!mediaPlayer.isPlaying()){
                                 mediaPlayer.start();
+                            }
+                        }
+                        //检查我自身车辆在什么位置，如果我的位置刚好在十字路口的话，那么就去判断将要去的路线是否拥堵，如果是的话，发出提醒
+                        Nowcar isCrowded=null;
+                        isCrowded=check.selectcar(cars,Person.car_id);
+                        if(isCrowded.getXx()>=200&&isCrowded.getXx()<=400&&isCrowded.getDirection()==1){
+                            if((isCrowded.getYy()>=0&&isCrowded.getYy()<=100&&isCrowded.getFlag()==1)
+                            ||(isCrowded.getYy()>=700&&isCrowded.getYy()<=800&&isCrowded.getFlag()==4)){
+                                //发送id好去传数据,这里去发送id信号就可以了，其他的交给数据返回后 发isCrowded.getFlag()
+                                sendCrowdedConnection(isCrowded.getFlag());//用于检测的数据3月4号
                             }
                         }
                         //如果是雾霾天气，开启提醒
@@ -258,9 +272,121 @@ public class MainActivity extends AppCompatActivity {
                     String response1=(String)msg.obj;
                     parseXMLNowCar(response1);
                     break;
+                case SHOW_CROWDED:
+                    //这里是是否拥堵的返回数据
+                    String myresponse=(String)msg.obj;
+                    parseXMLCrowded(myresponse);
+                    //解析完后直接鉴别，不在返回
+                    checkRoute(crowdeds,cars);//在这里进行检测，如果出现拥堵，会发出提示
             }
         }
     };
+    private void parseXMLCrowded(String xmlData){
+        crowdeds=new ArrayList<Mycrowded>();
+        try{
+            SAXParserFactory factory3=SAXParserFactory.newInstance();
+            XMLReader xmlReader1=factory3.newSAXParser().getXMLReader();
+            CrowdedHandler crowdedHandler=new CrowdedHandler();
+            xmlReader1.setContentHandler(crowdedHandler);
+            xmlReader1.parse(new InputSource(new StringReader(xmlData)));
+            crowdeds=crowdedHandler.getList();
+            //Toast.makeText(MainActivity.this, "一种有"+crowdeds.size()+"条拥挤数据！", Toast.LENGTH_LONG).show();
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+    }
+    private void checkRoute(List<Mycrowded> cro,List<Nowcar> mycars){
+        for(Mycrowded mycrowded:cro){
+
+            if(mycrowded.getMyflag()==1){
+                if(mycrowded.getNextflag()==1){
+                    //找到在x(500,1080)y(0,100)和x(980,1080)y(0,700)中的车辆，并计算平均速度
+                    int count=0;
+                    double sum=0;
+                    for(Nowcar car : mycars){
+                        if((car.getXx()>=500&&car.getXx()<=1080&&car.getYy()>=0&&car.getYy()<=100)
+                                ||(car.getXx()>=980&&car.getXx()<=1080&&car.getYy()>=0&&car.getYy()<=700)){
+                            ++count;
+                            sum=sum+car.getSpeed();
+                        }
+                    }
+                    //循环结束，进行计算
+                    if(count>1) {
+                        double average =sum/count;
+                        if(average<(0.5*mycrowded.getSpeed())){
+                            Toast.makeText(MainActivity.this,"当前1号线非常拥挤，可以考虑改道行驶",Toast.LENGTH_LONG).show();
+                        }else if(average<(0.7*mycrowded.getSpeed())){
+                            //如果所有车辆的平均速度小于公有速度的0.7,就发出提醒
+                            Toast.makeText(MainActivity.this,"当前1号线比较拥挤，可以考虑改道行驶",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+                if(mycrowded.getNextflag()==2){
+                    int count=0;
+                    double sum=0;
+                    for(Nowcar car : mycars){
+                        if((car.getXx()>=400&&car.getXx()<=500&&car.getYy()>=0&&car.getYy()<=800)){
+                            ++count;
+                            sum=sum+car.getSpeed();
+                        }
+                    }
+                    //循环结束，进行计算
+                    if(count>1) {
+                        double average =sum/count;
+                        if(average<(0.5*mycrowded.getSpeed())){
+                            Toast.makeText(MainActivity.this,"当前2号线非常拥挤，可以考虑改道行驶",Toast.LENGTH_LONG).show();
+                        }else if(average<(0.7*mycrowded.getSpeed())){
+                            //如果所有车辆的平均速度小于公有速度的0.7,就发出提醒
+                            Toast.makeText(MainActivity.this,"当前2号线比较拥挤，可以考虑改道行驶",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            }
+            if(mycrowded.getMyflag()==4){
+                if(mycrowded.getNextflag()==2){
+                    int count=0;
+                    double sum=0;
+                    for(Nowcar car : mycars){
+                        if((car.getXx()>=400&&car.getXx()<=500&&car.getYy()>=0&&car.getYy()<=800)){
+                            ++count;
+                            sum=sum+car.getSpeed();
+                        }
+                    }
+                    //循环结束，进行计算
+                    if(count>1) {
+                        double average =sum/count;
+                        if(average<(0.5*mycrowded.getSpeed())){
+                            Toast.makeText(MainActivity.this,"当前2号线非常拥挤，可以考虑改道行驶",Toast.LENGTH_LONG).show();
+                        }else if(average<(0.7*mycrowded.getSpeed())){
+                            //如果所有车辆的平均速度小于公有速度的0.7,就发出提醒
+                            Toast.makeText(MainActivity.this,"当前2号线比较拥挤，可以考虑改道行驶",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+                else if(mycrowded.getNextflag()==4){
+                    int count=0;
+                    double sum=0;
+                    for(Nowcar car : mycars){
+                        if((car.getXx()>=500&&car.getXx()<=1080&&car.getYy()>=700&&car.getYy()<=800)){
+                            ++count;
+                            sum=sum+car.getSpeed();
+                        }
+                    }
+                    //循环结束，进行计算
+                    if(count>1) {
+                        double average =sum/count;
+                        if(average<(0.5*mycrowded.getSpeed())){
+                            Toast.makeText(MainActivity.this,"当前2号线非常拥挤，可以考虑改道行驶",Toast.LENGTH_LONG).show();
+                        }else if(average<(0.7*mycrowded.getSpeed())){
+                            //如果所有车辆的平均速度小于公有速度的0.7,就发出提醒
+                            Toast.makeText(MainActivity.this,"当前2号线比较拥挤，可以考虑改道行驶",Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }
+            }
+        }
+
+    }
     private void parseXMLNowCar(String xmlData){
         cars=new ArrayList<Nowcar>();
         try{
@@ -343,13 +469,16 @@ public class MainActivity extends AppCompatActivity {
                     R.mipmap.map_page),0,0,paint);
             paint.setStyle(Paint.Style.FILL);
             paint.setAntiAlias(true);
-            paint.setColor(Color.rgb(255,255,255));
+            paint.setColor(Color.rgb(192,192,192));
+            canvas.drawRect(0,0,1080,100,paint);
+            canvas.drawRect(400,0,500,1800,paint);
+            canvas.drawRect(980,0,1080,1800,paint);
+            canvas.drawRect(0,700,1080,800,paint);
             if(cars!=null) {
                 int i = 0;
-                //canvas.drawRect(0,0,tableWidth,tableHeight-200,paint);
-                canvas.drawRect(0,0,1080,100,paint);
-                canvas.drawRect(400,0,500,1800,paint);
-                canvas.drawRect(980,0,1080,1800,paint);
+                //canvas.drawRect(0,0,1080,100,paint);
+                //canvas.drawRect(400,0,500,1800,paint);
+                //canvas.drawRect(980,0,1080,1800,paint);
                 paint.setColor(Color.rgb(255,0,0));
                 Log.d("database","tableWidth="+tableWidth+"tableHeight="+tableHeight);
                 int ii=0;//用来标记自己的球
@@ -422,7 +551,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendRequestNowcar(final int car_id,final int flag,final double xx,final double yy,final double speed,final  double direction){
-        String src="http://115.196.159.247:8080/CarSafe/NowcarServlet?car_id="+car_id+"&&flag="+flag+
+        String src="http://"+ MyIp.ip+":8080/CarSafe/NowcarServlet?car_id="+car_id+"&&flag="+flag+
                 "&&xx="+xx+"&&yy="+yy+"&&speed="+speed+"&&direction="+direction;
         HttpUtil.sendHttpRequest(src, new HttpCallbackListener() {
             @Override
@@ -440,11 +569,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
     private void sendRequestWithHttpURLConnection(final int car_id){
-        HttpUtil.sendHttpRequest("http://115.196.159.247:8080/CarSafe/TimecarServlet?car_id="+car_id, new HttpCallbackListener() {
+        HttpUtil.sendHttpRequest("http://"+ MyIp.ip+":8080/CarSafe/TimecarServlet?car_id="+car_id, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 Message message=new Message();
                 message.what=SHOW_PESPONSE;
+                message.obj=response;
+                handler.sendMessage(message);
+            }
+
+            @Override
+            public void onError(Exception e) {
+            }
+        });
+    }
+    private void sendCrowdedConnection(final int myflag){
+        HttpUtil.sendHttpRequest("http://"+ MyIp.ip+":8080/CarSafe/CrowdedServlet?myflag="+myflag, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                Message message=new Message();
+                message.what=SHOW_CROWDED;
                 message.obj=response;
                 handler.sendMessage(message);
             }
