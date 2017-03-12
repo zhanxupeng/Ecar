@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Display;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -470,10 +469,10 @@ public class MainActivity extends AppCompatActivity {
             paint.setStyle(Paint.Style.FILL);
             paint.setAntiAlias(true);
             paint.setColor(Color.rgb(192,192,192));
-            canvas.drawRect(0,0,1080,100,paint);
-            canvas.drawRect(400,0,500,1800,paint);
-            canvas.drawRect(980,0,1080,1800,paint);
-            canvas.drawRect(0,700,1080,800,paint);
+            //canvas.drawRect(0,0,1080,100,paint);
+            //canvas.drawRect(400,0,500,1800,paint);
+           // canvas.drawRect(980,0,1080,1800,paint);
+            //canvas.drawRect(0,700,1080,800,paint);
             if(cars!=null) {
                 int i = 0;
                 //canvas.drawRect(0,0,1080,100,paint);

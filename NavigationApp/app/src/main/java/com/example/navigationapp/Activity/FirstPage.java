@@ -1,7 +1,10 @@
 package com.example.navigationapp.Activity;
 
 import android.content.Intent;
-import android.support.v4.app.Fragment;
+
+import android.os.Handler;
+import android.os.Message;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,9 +22,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.navigationapp.R;
+import com.example.navigationapp.model.MyIp;
+import com.example.navigationapp.model.Mycoin;
 import com.example.navigationapp.model.Person;
+import com.example.navigationapp.model.StopStory;
+import com.example.navigationapp.util.HttpCallbackListener;
+import com.example.navigationapp.util.HttpUtil;
 
+import org.w3c.dom.Text;
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class FirstPage extends AppCompatActivity {
@@ -38,8 +53,9 @@ public class FirstPage extends AppCompatActivity {
     private LinearLayout layoutPGroup;
     private String[] imageDescription = { "淮左名都，竹西佳处，解鞍少驻初程。", "过春风十里。尽荠麦青青。",
             "自胡马窥江去后，废池乔木，犹厌言兵。", "渐黄昏，清角吹寒。都在空城。", "杜郎俊赏，算而今、重到须惊。" };
-
-
+    private final static int SHOW_RESPONSE=1;
+    private final static int SHOW_COIN=2;
+    private final static int SHOW_UPDATE=3;
     private ImageView a_start;
     private ImageView icons_one;
     private ImageView icons_two;
@@ -50,6 +66,8 @@ public class FirstPage extends AppCompatActivity {
     private ImageView a_car;
     private ImageView a_shop;
     private ImageView a_mymessage;
+    private TextView play_card;//打卡按钮
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +88,35 @@ public class FirstPage extends AppCompatActivity {
                 }
             }
         }).start();
-
+        //如果当前用户已经登录了，那么开启安行币系统
+        if(Person.car_id!=0&&Person.coinflag==false){
+            //输入安行币类的值（由服务器得到）
+            sendToGetCoin(Person.car_id);
+            Person.coinflag=true;
+        }
+        //上传现在的位置，用于检测是否进行雾霾检测
+        if(Person.car_id==0) {
+            sendWeatherRequest(1);
+        }
+        //打卡
+        play_card=(TextView)findViewById(R.id.play_card);
+        play_card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(Person.car_id>0) {
+                        if(Mycoin.member==calculate()){
+                           Toast.makeText(FirstPage.this,"您今天已经签到过了哦，明天再来",Toast.LENGTH_SHORT).show();
+                        }else {
+                            //签到成功
+                            sendCoinRequest();
+                            //Intent intent = new Intent(FirstPage.this, ToTalkActivity.class);
+                            //startActivity(intent);
+                        }
+                    }else {
+                        Toast.makeText(FirstPage.this,"要先登录的哦",Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
 
         //获取id
         icons_one=(ImageView)findViewById(R.id.icons_one);
@@ -98,7 +144,9 @@ public class FirstPage extends AppCompatActivity {
         icons_three.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(FirstPage.this,"改功能暂未开放，请谅解！",Toast.LENGTH_SHORT).show();
+               //进入博客空间的链接
+                Intent intent=new Intent(FirstPage.this,BlogListActivity.class);
+                startActivity(intent);
             }
         });
         icons_four=(ImageView) findViewById(R.id.icons_four);
@@ -117,13 +165,18 @@ public class FirstPage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        //改功能仅对登录用户，并且改天是第一次做题的用户方可进入
         icons_six=(ImageView) findViewById(R.id.icons_six);
         icons_six.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(Person.flag) {
-                    Intent intent = new Intent(FirstPage.this, EnjoyActivity.class);
-                    startActivity(intent);
+                    if(Mycoin.mydate!=calculate()) {
+                        Intent intent = new Intent(FirstPage.this, EnjoyActivity.class);
+                        startActivity(intent);
+                    }else{
+                        Toast.makeText(FirstPage.this,"抱歉，您今天已经做过题了",Toast.LENGTH_SHORT).show();
+                    }
                 }else{
                     Toast.makeText(FirstPage.this,"该功能仅对登录用户开放，请先登录！",Toast.LENGTH_LONG).show();
                 }
@@ -238,5 +291,126 @@ public class FirstPage extends AppCompatActivity {
     protected void onDestroy(){
         isStop=true;
         super.onDestroy();
+    }
+    private void sendWeatherRequest(int id){
+        String url="http://"+ MyIp.ip+":8080/CarSafe/WeatherServlet?id="+id;
+        HttpUtil.sendHttpRequest(url, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                Message message=new Message();
+                message.what=SHOW_RESPONSE;
+                message.obj=response;
+                handler.sendMessage(message);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+    private void sendToGetCoin(int car_id){
+        String coinUrl="http://"+ MyIp.ip+":8080/CarSafe/IntegrationServlet?car_id="+car_id;
+        HttpUtil.sendHttpRequest(coinUrl, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+              Message message=new Message();
+                message.what=SHOW_COIN;
+                message.obj=response;
+                handler.sendMessage(message);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+    }
+   private Handler handler=new Handler(){
+     public void handleMessage(Message msg){
+         switch (msg.what){
+             case SHOW_RESPONSE:
+                 String response=(String) msg.obj;
+                 if(Integer.parseInt(response)>=5&&Person.car_id==0) {
+                     Person.car_id=-1;
+                     Toast.makeText(FirstPage.this, "当前空间能见度低，已经开始预警模式", Toast.LENGTH_SHORT).show();
+                 }
+                 StopStory.flag=Integer.parseInt(response);
+                 break;
+             case SHOW_COIN:
+                 String coinResponse=(String)msg.obj;
+                 //Toast.makeText(FirstPage.this,coinResponse,Toast.LENGTH_SHORT).show();
+                 //处理数据
+                 parseXMLcoin(coinResponse);
+                 break;
+             case SHOW_UPDATE:
+                 String myresponse=(String)msg.obj;
+                 Toast.makeText(FirstPage.this,myresponse,Toast.LENGTH_SHORT).show();
+                 break;
+         }
+     }
+   };
+   private void parseXMLcoin(String xmlData){
+       try{
+           XmlPullParserFactory factory=XmlPullParserFactory.newInstance();
+           XmlPullParser xmlPullParser=factory.newPullParser();
+           xmlPullParser.setInput(new StringReader(xmlData));
+           int eventType=xmlPullParser.getEventType();
+           while (eventType!=XmlPullParser.END_DOCUMENT){
+               String nodeName=xmlPullParser.getName();
+               switch (eventType){
+                   case XmlPullParser.START_TAG:{
+                       if("car_id".equals(nodeName)){
+                           Mycoin.car_id=Integer.parseInt(xmlPullParser.nextText());
+                       }else if("coin".equals(nodeName)){
+                           Mycoin.coin=Integer.parseInt(xmlPullParser.nextText());
+                       }else if("member".equals(nodeName)){
+                           Mycoin.member=Integer.parseInt(xmlPullParser.nextText());
+                       }else if("mydate".equals(nodeName)){
+                           Mycoin.mydate=Integer.parseInt(xmlPullParser.nextText());
+                       }
+                       break;
+                   }
+                   default:
+                       break;
+               }
+               eventType=xmlPullParser.next();
+           }
+       }catch (Exception e){
+           e.printStackTrace();
+       }
+   }
+    private int calculate(){
+        int s=0;
+        Calendar calendar=Calendar.getInstance();
+        s=100*calendar.get(Calendar.MONTH)+calendar.get(Calendar.DAY_OF_MONTH);
+        return s;
+    }
+    //用于签到的数据
+    private int calculates(){
+        int s=0;
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(new Date());
+        s=100*calendar.get(Calendar.MONTH)+calendar.get(Calendar.DAY_OF_MONTH);
+        return s;
+    }
+    private void sendCoinRequest(){
+        Mycoin.member=calculates();
+        Mycoin.coin=Mycoin.coin+200;
+        String str="http://"+ MyIp.ip+":8080/CarSafe/InsertQianServlet?car_id="+ Mycoin.car_id+"&coin="+Mycoin.coin+"&member="+Mycoin.member+"&flag=1";
+        HttpUtil.sendHttpRequest(str, new HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) {
+                Message message=new Message();
+                message.what=SHOW_UPDATE;
+                message.obj=response;
+                handler.sendMessage(message);
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
     }
 }

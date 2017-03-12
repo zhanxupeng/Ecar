@@ -26,12 +26,18 @@
             android:text="安行    "
             />
         <TextView
+            android:id="@+id/play_card"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:gravity="right"
             android:layout_gravity="center"
-            android:text="打卡"
+            android:text="签"
+            />
+        <TextView
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+
             />
     </LinearLayout>
 <LinearLayout
@@ -67,7 +73,9 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
-            ></LinearLayout>
+            >
+
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>
     </LinearLayout>
@@ -121,7 +129,7 @@
             android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="新手模式"
+            android:text="发现"
             />
     </LinearLayout>
     <LinearLayout
@@ -166,7 +174,7 @@
             android:layout_width="130dp"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="红灯休闲"
+            android:text="每日一题"
             />
     </LinearLayout>
         </LinearLayout>

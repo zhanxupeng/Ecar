@@ -29,7 +29,10 @@
         <activity android:name=".Activity.PositionActivity" />
         <activity android:name=".Activity.EnjoyActivity" />
         <activity android:name=".Activity.traffic_activity" />
-        <activity android:name=".Activity.KipActivity"></activity>
+        <activity android:name=".Activity.KipActivity" />
+        <activity android:name=".Activity.CoinShopActivity" />
+        <activity android:name=".Activity.ToTalkActivity" />
+        <activity android:name=".Activity.BlogListActivity"></activity>
     </application>
 
 </manifest>

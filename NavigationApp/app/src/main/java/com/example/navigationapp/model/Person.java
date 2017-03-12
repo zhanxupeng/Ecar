@@ -5,8 +5,9 @@ package com.example.navigationapp.model;
  */
 
 public class Person {
-    public static int car_id;
+    public static int car_id=0;
     public static String usename;
     public static String password;
     public static boolean flag=false;
+    public static boolean coinflag=false;
 }

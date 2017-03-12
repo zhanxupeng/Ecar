@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.navigationapp.R;
+import com.example.navigationapp.model.MyIp;
 import com.example.navigationapp.model.Person;
 import com.example.navigationapp.model.Timecar;
 import com.example.navigationapp.util.ContentHandler;
@@ -95,7 +96,7 @@ public class AccelerationActivity extends AppCompatActivity {
                     } else if (result == 4) {
                         f_rank.setText("危险");
                         f_rank.setTextColor(Color.rgb(255, 0, 0));
-                        f_detail.setText("您的刹车严重失灵，请那没事维修");
+                        f_detail.setText("您的刹车严重失灵，请立马维修");
                     }
                 }
                 }
@@ -122,7 +123,7 @@ public class AccelerationActivity extends AppCompatActivity {
         return result;
     }
     private void sendRequestWithHttpURLConnection(final int car_id){
-        HttpUtil.sendHttpRequest("http://115.196.159.247:8080/CarSafe/TimecarServlet?car_id="+car_id, new HttpCallbackListener() {
+        HttpUtil.sendHttpRequest("http://"+ MyIp.ip+":8080/CarSafe/TimecarServlet?car_id="+car_id, new HttpCallbackListener() {
             @Override
             public void onFinish(String response) {
                 Message message=new Message();

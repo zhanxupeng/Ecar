@@ -25,6 +25,8 @@ import com.example.navigationapp.model.Person;
 import com.example.navigationapp.util.HttpCallbackListener;
 import com.example.navigationapp.util.HttpUtil;
 
+import org.w3c.dom.Text;
+
 public class MymessageActivity extends AppCompatActivity {
     private Button a_register;
     private Button a_login;
@@ -36,6 +38,7 @@ public class MymessageActivity extends AppCompatActivity {
     private LinearLayout d_before_layout;
     private LinearLayout d_after_layout;
     private static final int SHOW_RESPONSE=1;
+    private TextView mycoin_shop;
     private Button d_cencel;
     private Handler handler=new Handler(){
         public void handleMessage(Message msg){
@@ -62,6 +65,15 @@ public class MymessageActivity extends AppCompatActivity {
         a_register=(Button)findViewById(R.id.a_register);
         d_before_layout=(LinearLayout) findViewById(R.id.d_before_layout);
         d_after_layout=(LinearLayout) findViewById(R.id.d_after_layout);
+        //积分商城
+        mycoin_shop=(TextView)findViewById(R.id.mycoin_shop);
+        mycoin_shop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MymessageActivity.this,CoinShopActivity.class);
+                startActivity(intent);
+            }
+        });
         //检测一下当前是否登录
         setmessage();
         d_cencel=(Button)findViewById(R.id.d_cancel);

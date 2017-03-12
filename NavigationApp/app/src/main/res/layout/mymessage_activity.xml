@@ -63,15 +63,13 @@
         </LinearLayout>
     </LinearLayout>
 
-
-
     <LinearLayout
         android:id="@+id/d_after_layout"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:orientation="horizontal"
         android:visibility="gone"
-        android:background="@mipmap/new_background"
+        android:background="@mipmap/myhead"
         >
         <LinearLayout
             android:layout_width="match_parent"
@@ -87,6 +85,7 @@
                 android:layout_width="170dp"
                 android:layout_height="170dp"
                 android:src="@mipmap/headpicture"
+                android:visibility="invisible"
                 />
         </LinearLayout>
 
@@ -118,6 +117,7 @@
                         android:id="@+id/d_cancel"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:background="#55ffffff"
                         android:text="注销"
                         />
                 </LinearLayout>
@@ -153,19 +153,13 @@
         </LinearLayout>
     </LinearLayout>
     </LinearLayout>
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <TextView
+        android:id="@+id/mycoin_shop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="积分商城"
+        android:textSize="24sp"
+        />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
