@@ -8,6 +8,7 @@
         android:background="@mipmap/forecast_car"
         >
         <ImageView
+            android:id="@+id/traffic_return"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:src="@mipmap/star_return"
@@ -39,16 +40,24 @@
         android:gravity="center_horizontal"
         >
         <EditText
+            android:id="@+id/traffic_route"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:hint="      地点"
             />
         <EditText
-            android:layout_width="100dp"
+            android:id="@+id/traffic_time"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:hint="      时间"
             />
+        <TextView
+            android:layout_width="20dp"
+            android:layout_height="30dp"
+            android:text="点"
+            />
         <Button
+            android:id="@+id/traffic_select"
             android:layout_width="70dp"
             android:layout_height="30dp"
             android:gravity="center"
@@ -76,26 +85,31 @@
             android:gravity="center_horizontal"
             >
             <ImageView
+                android:id="@+id/averagea"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starone"
+                android:src="@mipmap/greystar"
                 />
             <ImageView
+                android:id="@+id/averageb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starone"
+                android:src="@mipmap/greystar"
                 />
             <ImageView
+                android:id="@+id/averagec"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starone"
+                android:src="@mipmap/greystar"
                 />
             <ImageView
+                android:id="@+id/averaged"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starone"
+                android:src="@mipmap/greystar"
                 />
             <ImageView
+                android:id="@+id/averagee"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/greystar"
@@ -130,26 +144,31 @@
             android:layout_weight="4"
             >
             <ImageView
+                android:id="@+id/daoa"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/daob"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/daoc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/daod"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/daoe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/greystartwo"
@@ -189,26 +208,31 @@
             android:layout_weight="4"
             >
             <ImageView
+                android:id="@+id/yonga"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/yongb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/yongc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/yongd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/yonge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/greystartwo"
@@ -246,26 +270,31 @@
             android:layout_weight="4"
             >
             <ImageView
+                android:id="@+id/gonga"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/gongb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/gongc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/gongd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@mipmap/starfour"
+                android:src="@mipmap/greystartwo"
                 />
             <ImageView
+                android:id="@+id/gonge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@mipmap/greystartwo"
@@ -280,75 +309,4 @@
         </LinearLayout>
 
     </LinearLayout>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <LinearLayout
-        android:id="@+id/i_layout1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:orientation="vertical"
-        >
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:gravity="bottom|center_horizontal"
-            android:hint="目标位置"
-            />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
-            >
-        <Button
-            android:id="@+id/i_analysis"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#ff9a14"
-            android:text="开始分析"
-            />
-        </LinearLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/i_layout2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:orientation="vertical"
-        >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="220dp"
-            android:background="@mipmap/trafficbg"
-            >
-
-        </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:gravity="center"
-            android:text="由于返程高峰，杭州各路段都比较挤，各个景点车辆都很多，预计比平时多50%的时延，道路结冰，开车需谨慎。"
-            />
-    </LinearLayout>
-
 </LinearLayout>

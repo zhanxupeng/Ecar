@@ -1,13 +1,20 @@
 package com.example.navigationapp.Activity;
 
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,85 +39,174 @@ import javax.xml.parsers.SAXParserFactory;
 
 public class AccelerationActivity extends AppCompatActivity {
 
-    private LinearLayout f_layout_one;
-    private LinearLayout f_layout_two;
-    private LinearLayout f_layout_three;
-    private Button f_start;
-    private Button f_finish;
-    private TextView f_rank;
-    private TextView f_detail;
-    private List<Timecar> times;
+
+    private List<Timecar> times;//解析出来的数据
+    private int myacceleration=0;//用于求出当前最大加速度
     private static final int SHOW_PESPONSE=1;
+    private static final int SHOW_CHANGE=2;
     private int result=0;
+    private TextView acceleration_date;
+    private TextView time_date;
+    private TextView speed_date;
+    private ImageButton acceleration_button;
+
+    private TextView security_name;
+    private TextView security_detail;
+    private ImageView security_image;
     private Handler handler=new Handler(){
       public void handleMessage(Message msg){
           switch (msg.what){
               case SHOW_PESPONSE:
                   String response=(String)msg.obj;
-                  parseXMLWithSAX(response);
+                  parseXMLWithSAX(response);//已经解析完成，数据存在times里面,开一个线程，每秒钟修改一下数据
+                  createMyThread(times.size());//开始开线程执行数据
+                  break;
+              case SHOW_CHANGE:
+                  String change=(String)msg.obj;
+                  Log.d("setTheChange",change);
+                  int num=Integer.parseInt(change);
+                  //通过当前的num，来计算当前的速度，加速度，和时间
+                  setAllText(num);
+                  break;
           }
       }
     };
+    private void setAllText(int index){
+        int mytime=times.get(index).getTime();
+        int hour=mytime/3600;
+        int minute=(mytime%3600)/60;
+        int second=mytime%60;
+        int speed=(int)times.get(index).getSpeed();
+        String strspeed=String.format("%d",speed);
+        //如果是第一个的话，就不设置加速度
+        if(index==0){
+            time_date.setText("00:00:01");
+            speed_date.setText(strspeed);
+        }
+        else {
+            //先求出加速度
+            Log.d("xxxxxxxxxxxxxxx","into the >1");
+            int a=((int)times.get(index-1).getSpeed())-((int)times.get(index).getSpeed());
+            time_date.setText(hour+":"+minute+":"+second);
+            speed_date.setText(strspeed);
+            acceleration_date.setText(String.format("%d",a));
+            if(a>myacceleration){
+                myacceleration=a;
+            }
+            Log.d("xxxxxxxxxxxxxxx","index:"+index+",");
+            Log.d("xxxxxxxxxxxxxxxxxxxx",a+","+times.get(index).getSpeed());
+        }
+        //如果当前数据已经读完了，那么自动停止
+        if(index==(times.size()-1)){
+            acceleration_button.setImageResource(R.mipmap.stop_butto);
+            //这里需要加测试的结果
+            acceleration(myacceleration,50);//把当前最大的加速度和原来的加速度比较
+            showAddDialog();
+        }
+    }
+    private void createMyThread(final int tnum){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                int mynumber=0;
+                while (mynumber<tnum){
+                    //先sleep一秒，然后再发送数据
+                    try {
+                        Log.d("Thread","once");
+                        Thread.sleep(1000);
+                        Message message=new Message();
+                        message.what=SHOW_CHANGE;
+                        message.obj=String.format("%d",mynumber);
+                        handler.sendMessage(message);
+                        mynumber++;
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.acceleration_activity);
-        f_layout_one=(LinearLayout)findViewById(R.id.f_layout_one);
-        f_layout_two=(LinearLayout)findViewById(R.id.f_layout_two);
-        f_layout_three=(LinearLayout)findViewById(R.id.f_layout_three);
-        f_start=(Button)findViewById(R.id.f_start);
-        f_finish=(Button)findViewById(R.id.f_finish);
-        f_rank=(TextView)findViewById(R.id.f_rank);
-        f_detail=(TextView)findViewById(R.id.f_detail);
-        f_start.setOnClickListener(new View.OnClickListener() {
+        acceleration_date=(TextView)findViewById(R.id.acceleration_date);
+        time_date=(TextView)findViewById(R.id.time_date);
+        speed_date=(TextView)findViewById(R.id.speed_date);
+        acceleration_button=(ImageButton)findViewById(R.id.acceleration_button);
+        acceleration_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                f_layout_one.setVisibility(View.GONE);
-                f_layout_two.setVisibility(View.VISIBLE);
-                f_layout_three.setVisibility(View.GONE);
-                sendRequestWithHttpURLConnection(Person.car_id);
-            }
-        });
-        f_finish.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(result==0){
-                    Toast.makeText(AccelerationActivity.this,"解析未完成，请耐心等待",Toast.LENGTH_SHORT).show();
-                }else {
-                    f_layout_one.setVisibility(View.GONE);
-                    f_layout_two.setVisibility(View.GONE);
-                    f_layout_three.setVisibility(View.VISIBLE);
-                    if (result == 1) {
-                        f_rank.setText("安全");
-                        f_rank.setTextColor(Color.rgb(0, 255, 0));
-                        f_detail.setText("您的刹车很好，请放心驾驶。");
-                    } else if (result == 2) {
-                        f_rank.setText("良好");
-                        f_rank.setTextColor(Color.rgb(0, 0, 255));
-                        f_detail.setText("您的刹车状态还行，可以继续使用");
-                    } else if (result == 3) {
-                        f_rank.setText("中等");
-                        f_rank.setTextColor(Color.rgb(255, 255, 0));
-                        f_detail.setText("您的刹车状态欠佳，建议维修");
-                    } else if (result == 4) {
-                        f_rank.setText("危险");
-                        f_rank.setTextColor(Color.rgb(255, 0, 0));
-                        f_detail.setText("您的刹车严重失灵，请立马维修");
-                    }
+                if(myacceleration==0) {
+                    acceleration_button.setImageResource(R.mipmap.pause_button);
+                    sendRequestWithHttpURLConnection(Person.car_id);//发送请求，得到数据
+                }else{
+                    acceleration(myacceleration,50);//把当前最大的加速度和原来的加速度比较
+                    Log.d("xxxzxxxxxxxxxxxxxxxxxx",result+"ss");
+                    showAddDialog();
                 }
-                }
+                 }
         });
+        //这里也可以手动加测试的结果
     }
-    public int acceleration(List<Timecar> times, double old){
-        double now=0;
-        int result=0;
-        for(int i=0;i<times.size()-1;i++){
-            double mynow=(times.get(i).getSpeed()-times.get(i+1).getSpeed())/1.0;
-            if(mynow>now){
-                now=mynow;
+    public void showAddDialog(){
+        LayoutInflater factory=LayoutInflater.from(AccelerationActivity.this);
+        final View view=factory.inflate(R.layout.acceleration_dialog,null);
+        security_name=(TextView)view.findViewById(R.id.security_name);
+        security_detail=(TextView)view.findViewById(R.id.security_detail);
+        security_image=(ImageView)view.findViewById(R.id.security_image);
+        //调用方法，修改参数
+        changeRank(result);
+        AlertDialog.Builder ad1=new AlertDialog.Builder(AccelerationActivity.this);
+        ad1.setTitle("提示：");
+        ad1.setView(view);
+        ad1.setPositiveButton("重测", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                myacceleration=0;
+                time_date.setText("00:00:00");
+                acceleration_date.setText("00");
+                speed_date.setText("00");
             }
+        });
+        ad1.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+                finish();
+            }
+        });
+        ad1.show();
+    }
+    private void changeRank(int num){
+        if(num==1){
+            //安全
+            security_name.setText("安全");
+            security_detail.setText("你的刹车性能是最佳性能时的98%，保养非常好，请继续努力");
+            security_name.setTextColor(Color.rgb(0,255,0));
+            security_image.setImageResource(R.mipmap.happy);
+        }else if(num==2){
+            //良好
+            security_name.setText("良好");
+            security_detail.setText("您的刹车性能是最佳性能的80%，继续保持");
+            security_name.setTextColor(Color.rgb(0,162,232));
+            security_image.setImageResource(R.mipmap.speechless);
+        }else if(num==3){
+            //中等
+            security_name.setText("中等");
+            security_detail.setText("您的刹车性能是最佳性能的60%，可以考虑维修");
+            security_name.setTextColor(Color.rgb(0,0,0));
+            security_image.setImageResource(R.mipmap.distress);
+        }else if(num==4){
+            //危险
+            security_name.setText("危险");
+            security_detail.setText("您的刹车已经严重失灵了，请务必马上维修");
+            security_name.setTextColor(Color.rgb(255,0,0));
+            security_image.setImageResource(R.mipmap.angry);
         }
+    }
+    public int acceleration(int now, int old){
+
         if(now>=old){
             result=1;//代表安全
         }else if(now>=old*0.9){
@@ -122,6 +218,7 @@ public class AccelerationActivity extends AppCompatActivity {
         }
         return result;
     }
+    //这个是用来得到车辆的运动状况的
     private void sendRequestWithHttpURLConnection(final int car_id){
         HttpUtil.sendHttpRequest("http://"+ MyIp.ip+":8080/CarSafe/TimecarServlet?car_id="+car_id, new HttpCallbackListener() {
             @Override
@@ -137,6 +234,7 @@ public class AccelerationActivity extends AppCompatActivity {
             }
         });
     }
+    //解析数据
     private void parseXMLWithSAX(String xmlData){
         times=new ArrayList<Timecar>();
         try {
@@ -150,6 +248,9 @@ public class AccelerationActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        result=acceleration(times,60);
+        for(Timecar time:times){
+            Log.d("wannima",time.getSpeed()+","+time.getTime());
+        }
+        //result=acceleration(times,60);
     }
 }

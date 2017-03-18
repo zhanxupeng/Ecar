@@ -5,5 +5,5 @@ package com.example.navigationapp.model;
  */
 
 public class MyIp {
-    public final static String ip="192.168.31.99";
+    public final static String ip="115.196.147.120";
 }

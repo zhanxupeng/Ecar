@@ -42,6 +42,7 @@ public class ContentHandler extends DefaultHandler {
                 cars.setId(Integer.parseInt(value.toString().trim()));
             } else if ("car_id".equals(nodeName)) {
                // Log.d("car_id",value.toString().trim());
+                Log.d("timecar",value.toString().trim());
                 cars.setCar_id(Integer.parseInt(value.toString().trim()));
             } else if ("xx".equals(nodeName)) {
                // Log.d("xx",value.toString().trim());
@@ -50,6 +51,7 @@ public class ContentHandler extends DefaultHandler {
               //  Log.d("yy",value.toString().trim());
                 cars.setYy(Double.parseDouble(value.toString().trim()));
             } else if ("speed".equals(nodeName)) {
+                Log.d("speed",value.toString().trim());
               //  Log.d("speed",value.toString().trim());
                 cars.setSpeed(Double.parseDouble(value.toString().trim()));
             } else if ("time".equals(nodeName)) {
