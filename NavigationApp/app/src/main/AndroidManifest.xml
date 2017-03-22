@@ -32,7 +32,8 @@
         <activity android:name=".Activity.KipActivity" />
         <activity android:name=".Activity.CoinShopActivity" />
         <activity android:name=".Activity.ToTalkActivity" />
-        <activity android:name=".Activity.BlogListActivity"></activity>
+        <activity android:name=".Activity.BlogListActivity" />
+        <activity android:name=".Activity.BigDataActivity"></activity>
     </application>
 
 </manifest>

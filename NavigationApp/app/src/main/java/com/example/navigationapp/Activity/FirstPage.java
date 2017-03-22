@@ -149,11 +149,12 @@ public class FirstPage extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        //改为商城
         icons_four=(ImageView) findViewById(R.id.icons_four);
         icons_four.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(FirstPage.this,KipActivity.class);
+                Intent intent=new Intent(FirstPage.this,ShopActivity.class);
                 startActivity(intent);
             }
         });
@@ -161,7 +162,7 @@ public class FirstPage extends AppCompatActivity {
         icons_five.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(FirstPage.this,traffic_activity.class);
+                Intent intent=new Intent(FirstPage.this,BigDataActivity.class);
                 startActivity(intent);
             }
         });
@@ -189,7 +190,7 @@ public class FirstPage extends AppCompatActivity {
         a_shop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            Intent intent=new Intent(FirstPage.this,ShopActivity.class);
+            Intent intent=new Intent(FirstPage.this,KipActivity.class);
                 startActivity(intent);
                 finish();
             }

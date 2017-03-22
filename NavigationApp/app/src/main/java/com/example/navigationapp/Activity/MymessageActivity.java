@@ -28,6 +28,7 @@ import com.example.navigationapp.util.HttpUtil;
 import org.w3c.dom.Text;
 
 public class MymessageActivity extends AppCompatActivity {
+    private ImageView my_share;
     private Button a_register;
     private Button a_login;
     private ImageView b_che;
@@ -39,7 +40,7 @@ public class MymessageActivity extends AppCompatActivity {
     private LinearLayout d_after_layout;
     private static final int SHOW_RESPONSE=1;
     private TextView mycoin_shop;
-    private Button d_cencel;
+    private TextView d_cencel;
     private Handler handler=new Handler(){
         public void handleMessage(Message msg){
             switch (msg.what){
@@ -65,6 +66,8 @@ public class MymessageActivity extends AppCompatActivity {
         a_register=(Button)findViewById(R.id.a_register);
         d_before_layout=(LinearLayout) findViewById(R.id.d_before_layout);
         d_after_layout=(LinearLayout) findViewById(R.id.d_after_layout);
+        my_share=(ImageView)findViewById(R.id.my_share);//分享键
+
         //积分商城
         mycoin_shop=(TextView)findViewById(R.id.mycoin_shop);
         mycoin_shop.setOnClickListener(new View.OnClickListener() {
@@ -76,7 +79,7 @@ public class MymessageActivity extends AppCompatActivity {
         });
         //检测一下当前是否登录
         setmessage();
-        d_cencel=(Button)findViewById(R.id.d_cancel);
+        d_cencel=(TextView)findViewById(R.id.d_cancel);
         d_cencel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +115,7 @@ public class MymessageActivity extends AppCompatActivity {
         b_shang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent=new Intent(MymessageActivity.this,ShopActivity.class);
+                Intent intent=new Intent(MymessageActivity.this,KipActivity.class);
                 startActivity(intent);
                 finish();
             }

@@ -12,6 +12,9 @@ import com.example.navigationapp.R;
 
 public class KipActivity extends AppCompatActivity {
 
+    private ImageView b_che;
+    private ImageView b_shang;
+    private ImageView b_wo;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,14 +28,23 @@ public class KipActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        //返回首页按钮
-        Button btn_1 = (Button)findViewById(R.id.btn_1);
-        btn_1.setOnClickListener( new View.OnClickListener() {
-
+        b_che=(ImageView)findViewById(R.id.a_car);
+        b_che.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
+                Intent intent=new Intent(KipActivity.this,FirstPage.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        b_shang=(ImageView)findViewById(R.id.a_shop);
+        b_shang.setImageResource(R.mipmap.shang_two);
+        b_wo=(ImageView)findViewById(R.id.a_mymessage);
+        b_wo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(KipActivity.this,MymessageActivity.class);
+                startActivity(intent);
                 finish();
             }
         });

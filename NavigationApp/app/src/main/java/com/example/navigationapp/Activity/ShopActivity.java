@@ -30,9 +30,7 @@ public class ShopActivity extends AppCompatActivity {
     // 图片都存放在这里
     private List<ImageView> imageViewlist;
 
-    private ImageView b_che;
-    private ImageView b_shang;
-    private ImageView b_wo;
+
 
 
     private ImageView iv;
@@ -54,27 +52,6 @@ public class ShopActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.shop_activity);
 
-
-        b_che=(ImageView)findViewById(R.id.a_car);
-        b_che.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(ShopActivity.this,FirstPage.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-        b_shang=(ImageView)findViewById(R.id.a_shop);
-        b_shang.setImageResource(R.mipmap.shang_two);
-        b_wo=(ImageView)findViewById(R.id.a_mymessage);
-        b_wo.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(ShopActivity.this,MymessageActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
 
 
 

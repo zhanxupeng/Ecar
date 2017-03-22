@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.navigationapp.R;
@@ -54,6 +55,10 @@ public class traffic_activity extends AppCompatActivity {
     private ImageView gongd;
     private ImageView gonge;
 
+    private TextView tra_ave;
+    private TextView tra_dao;
+    private TextView tra_yong;
+    private TextView tra_gong;
     private ImageView traffic_return;
     private Handler handler=new Handler(){
         public void handleMessage(Message msg){
@@ -71,6 +76,11 @@ public class traffic_activity extends AppCompatActivity {
     private void changeState(){
         //通过 forecast 来改变各种星星的状态
         int ave=(forecast.getRrank()+forecast.getTrank()+forecast.getHrank())/3;
+
+        tra_ave.setText("Average Rating "+ave+".0");
+        tra_dao.setText(String.format("%d",forecast.getRrank())+".0");
+        tra_yong.setText(String.format("%d",forecast.getTrank())+".0");
+        tra_gong.setText(String.format("%d",forecast.getHrank())+".0");
         if(ave>0){
             averagea.setImageResource(R.mipmap.starone);
         }
@@ -177,6 +187,12 @@ public class traffic_activity extends AppCompatActivity {
         traffic_route=(EditText)findViewById(R.id.traffic_route);
         traffic_time=(EditText)findViewById(R.id.traffic_time);
         traffic_select=(Button)findViewById(R.id.traffic_select);
+
+
+        tra_ave=(TextView)findViewById(R.id.tra_ave);
+        tra_dao=(TextView)findViewById(R.id.tra_dao);
+        tra_yong=(TextView)findViewById(R.id.tra_yong);
+        tra_gong=(TextView)findViewById(R.id.tra_gong);
 
         averagea=(ImageView)findViewById(R.id.averagea);
         averageb=(ImageView)findViewById(R.id.averageb);

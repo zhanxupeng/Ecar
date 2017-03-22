@@ -72,12 +72,13 @@
         android:orientation="vertical"
         >
     <TextView
+        android:id="@+id/tra_ave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:text="Average Rating 4.0"
+        android:text="Average Rating 0.0"
         />
         <LinearLayout
             android:layout_width="match_parent"
@@ -174,9 +175,10 @@
                 android:src="@mipmap/greystartwo"
                 />
             <TextView
+                android:id="@+id/tra_dao"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:text="4.0"
+                android:text="0.0"
                 android:textSize="20sp"
                 android:gravity="center"
                 />
@@ -238,9 +240,10 @@
                 android:src="@mipmap/greystartwo"
                 />
             <TextView
+                android:id="@+id/tra_yong"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:text="4.0"
+                android:text="0.0"
                 android:textSize="20sp"
                 android:gravity="center"
                 />
@@ -300,9 +303,10 @@
                 android:src="@mipmap/greystartwo"
                 />
             <TextView
+                android:id="@+id/tra_gong"
                 android:layout_width="60dp"
                 android:layout_height="wrap_content"
-                android:text="3.0"
+                android:text="0.0"
                 android:textSize="20sp"
                 android:gravity="center"
                 />
