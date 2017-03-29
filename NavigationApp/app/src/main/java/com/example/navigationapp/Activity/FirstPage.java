@@ -71,7 +71,7 @@ public class FirstPage extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.first_page);
         init();
         new Thread(new Runnable() {

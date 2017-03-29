@@ -201,6 +201,28 @@ public class Pileup {
         }
         return car;
     }
+    public boolean SpeedWan(List<Nowcar> cars,int car_id){
+        boolean result=false;
+        Nowcar car=selectcar(cars,car_id);
+        if(car.getSpeed()>=50){
+            if(car.getFlag()==1&&car.getDirection()==1){
+                if((car.getXx()>=300&&car.getXx()<=400)||(car.getXx()>=880)){
+                    result=true;
+                }
+            }
+            if(car.getFlag()==1&&car.getDirection()==2){
+                if(car.getXx()>=500&&car.getXx()<=600){
+                    result=true;
+                }
+            }
+            if(car.getDirection()==2){
+                if(car.getYy()>=100||car.getYy()<=200){
+                    result=true;
+                }
+            }
+        }
+        return result;
+    }
     public int Danger( List< Nowcar > _data, int car_id, double s ){
         double x=0,y=0;
         int flag = 0;
